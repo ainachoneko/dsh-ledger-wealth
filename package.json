@@ -18,14 +18,14 @@
     "理财"
   ],
   "license": "MIT",
-  "author": "OWNER",
+  "author": "ainachoneko",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OWNER/dsh-ledger-wealth.git"
+    "url": "git+https://github.com/ainachoneko/dsh-ledger-wealth.git"
   },
-  "homepage": "https://github.com/OWNER/dsh-ledger-wealth#readme",
+  "homepage": "https://github.com/ainachoneko/dsh-ledger-wealth#readme",
   "bugs": {
-    "url": "https://github.com/OWNER/dsh-ledger-wealth/issues"
+    "url": "https://github.com/ainachoneko/dsh-ledger-wealth/issues"
   },
   "publishConfig": {
     "access": "public"
