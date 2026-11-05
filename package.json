@@ -42,6 +42,7 @@
     "README.md",
     "LICENSE",
     "assets/icon-180.png",
+    "scripts/install-into-dsh.mjs",
     "docs/INSTALL.md",
     "docs/INTERFACES.md"
   ],

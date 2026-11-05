@@ -13,20 +13,25 @@ DSH（DeepSeek Harness）插件。把「今天花了多少」和「理财今天�
 
 ## 安装
 
-三种方式，选一种即可。详见 [docs/INSTALL.md](docs/INSTALL.md)。
+**拿到 zip 或源码目录的话，一条命令：**
 
 ```bash
-# 1) 已发布到 npm 之后（市场里能搜到，或直接按名字装）
-dsh plugin --profile desktop add dsh-ledger-wealth
-
-# 2) 用本地打好的 tgz 装（不需要 npm 账号）
-dsh plugin --profile desktop add ./dsh-ledger-wealth-1.0.0.tgz
-
-# 3) 源码开发（改代码即时生效）
-dsh plugin --profile desktop add link:/绝对路径/dsh-ledger-wealth
+cd dsh-ledger-wealth        # 解压到纯英文、不带空格的路径
+node scripts/install-into-dsh.mjs
 ```
 
-装完重启 DSH，会话里就能看到下面这些工具。数据库默认落在 `~/.dsh/ledger-wealth/ledger.sqlite`。
+脚本用 DSH 自带的 pnpm 装进 profile，然后**真的加载一次**（注册 20 个工具、调 `ledger_balance`），
+验证通过才写进 `dsh.profile.bundles`。装完重启 DSH。不需要 `dsh` 命令，不需要 npm 账号，没有 Python 依赖。
+
+其他方式（完整说明见 [docs/INSTALL.md](docs/INSTALL.md)）：
+
+```bash
+node scripts/install-into-dsh.mjs --pack                     # 装一份自包含副本，源码目录可以删
+node scripts/install-into-dsh.mjs --remove                   # 卸载
+dsh plugin --profile desktop add link:/绝对路径/dsh-ledger-wealth   # 有 dsh 命令时的等价写法
+```
+
+数据库默认落在 `~/.dsh/ledger-wealth/ledger.sqlite`。
 
 > 想让它出现在 **DSH 插件市场**里被别人一键安装，缺的不是代码，而是「收录」：
 > 市场只列出精选列表 [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) 里的插件。
