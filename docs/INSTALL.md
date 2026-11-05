@@ -19,7 +19,7 @@
 
 ```bash
 # 1) 发布到 npm（建议——市场优先用 npm 装：快、锁精确版本、能提示更新）
-cd packages/dsh-ledger-wealth
+cd dsh-ledger-wealth
 npm login                      # 只需一次
 npm publish --access public    # 包名 dsh-ledger-wealth
 
@@ -40,7 +40,7 @@ npm publish --access public    # 包名 dsh-ledger-wealth
 
 ```bash
 # 1) 打包
-cd packages/dsh-ledger-wealth
+cd dsh-ledger-wealth
 node scripts/pack.mjs
 #   -> dist/dsh-ledger-wealth-1.0.0.tgz
 
@@ -71,7 +71,7 @@ node scripts/install-plugin.mjs --remove       # 卸载（pnpm remove + 移出 b
 ## C. link 源码（开发用）
 
 ```bash
-dsh plugin --profile desktop add "link:D:/DSH_WorkPlace/记账理财插件/packages/dsh-ledger-wealth"
+dsh plugin --profile desktop add "link:D:/DSH_WorkPlace/dsh-ledger-wealth"
 ```
 
 改完 `lib/*.js` 重启 DSH 即生效，不用重新打包。

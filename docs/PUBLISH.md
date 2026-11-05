@@ -27,7 +27,7 @@ npm 发布是可选项，但强烈建议做，理由见下面第 2 节。
 `dsh.plugin.json` 那套不是 DSH 插件；DSH 插件就是 npm 包形态的 cordis 插件，装进 profile 的 `node_modules` 并由 `dsh.profile.bundles` 激活。列表条目校验的是**仓库**，所以先把仓库建对：
 
 - 仓库名用 `dsh-ledger-wealth`（不要用现在本地目录的中文名）；
-- **仓库根就是插件包根**：`package.json`、`cordis.patch.yml`、`lib/` 都在根目录。现在本地是 `packages/dsh-ledger-wealth`，推送时把它作为仓库根，或者用 subpath 条目（见文末「monorepo」）；
+- **仓库根就是插件包根**：`package.json`、`cordis.patch.yml`、`lib/` 都在根目录。本仓库已经整理成这个形状（本地路径 `D:/DSH_WorkPlace/dsh-ledger-wealth`），直接推即可；只有 monorepo 才需要用 subpath 条目（见文末「monorepo」）；
 - `package.json` 里必须有 `dsh.bundle.patch`，且指向真实存在的 `cordis.patch.yml`——**只声明 `dsh.client` 是最常见的被拒原因**，那玩意儿装不上；
 - `lib/` 必须提交进仓库：市场会把「声明了入口但文件不存在」判成 broken 并回滚，`github:` 安装不跑构建，靠 `prepare` 生成 `lib/` 等于装不上；
 - **不要加 `prepare` / `postinstall` / `preinstall`**：pnpm 会拦构建脚本（市场要弹审批），`github:` 安装一跑 prepare 就卡在审批上。本项目零运行期依赖、`lib/` 是源码，天然满足；
@@ -38,7 +38,7 @@ npm 发布是可选项，但强烈建议做，理由见下面第 2 节。
 本地这一份已经补好了市场需要的元数据，直接推就行：
 
 ```bash
-cd packages/dsh-ledger-wealth
+cd dsh-ledger-wealth
 git init -b main
 git add -A
 git commit -m "feat: dsh-ledger-wealth 1.0.0"
@@ -61,7 +61,7 @@ node scripts/prepare-release.mjs --owner <你的GitHub账号>
 `dsh-ledger-wealth` 这个名字在 npm 上目前是空的（查过 `registry.npmjs.org` 返回 404），可以直接用。
 
 ```bash
-cd packages/dsh-ledger-wealth
+cd dsh-ledger-wealth
 npm login                     # 首次
 node scripts/pack.mjs         # 本地先验证打包内容
 npm publish --access public   # 无 scope，public 可省
@@ -114,7 +114,7 @@ Local-first bookkeeping plugin with a separate wealth-holdings ledger.
 ## 4. 提 PR 前的自查
 
 ```bash
-cd packages/dsh-ledger-wealth
+cd dsh-ledger-wealth
 node scripts/check.mjs                 # 全部模块可导入
 node tests/run.mjs                     # 20 个工具 + 领域逻辑用例
 node scripts/pack.mjs                  # 打包内容齐全（lib/、cordis.patch.yml 都在）

@@ -28,7 +28,7 @@
 | `lib/wealth.js` `lib/profit.js` `lib/sources/fund.js` `lib/sources/bank.js`<br>`lib/tools/wealth.js` `tests/wealth.test.js` `tests/sources.test.js` | **B-理财** | B 模块领域逻辑 + 数据源 + 工具 |
 | `lib/ocr.js` `lib/tools/ocr.js` `lib/jobs.js` `lib/tools/jobs.js`<br>`scripts/*.ps1` `README.md` `tests/ocr.test.js` `tests/jobs.test.js` | **C-运维/OCR** | OCR、定时任务、安装脚本、README |
 
-`packages/dsh-ledger-wealth/lib/index.js` 只由 Lead 写：它 import 各模块的 `register*Tools()`。
+`lib/index.js` 只由 Lead 写：它 import 各模块的 `register*Tools()`。
 若你的模块需要新增导出，先在本文件登记。
 
 ## 2. 金额 / 日期 / 错误 工具（`lib/money.js` `lib/dates.js` `lib/errors.js`）
@@ -264,7 +264,7 @@ prompt 必须自包含（定时任务唤起的是新 turn）：写明「调用 `
 
 ### 6.3 脚本与文档
 
-- `scripts/install.ps1`：把 `packages/dsh-ledger-wealth` 以 `link:` 方式装进指定 profile
+- `scripts/install.ps1`：把 本仓库以 `link:` 方式装进指定 profile
   （默认 desktop）：`dsh plugin --profile <p> add link:<abs>`，失败时打印手工步骤；打印重启提示。
 - `scripts/setup-ocr.ps1`：建 `.venv-ocr`、`pip install rapidocr_onnxruntime`、自检 import、打印配置片段。
 - `scripts/smoke.ps1`：跑 `node --test` 全量测试 + 打印安装提示。
@@ -341,12 +341,13 @@ export function buildMonthlyReport(db, { month, timeZone = 'Asia/Shanghai', toda
 ## 9. 测试契约
 
 - 统一 `node --test`（Node 24 内置），文件 `tests/<name>.test.js`（放在**插件包内**：
-  `packages/dsh-ledger-wealth/tests/`），用 `import { test } from 'node:test'` + `assert`。
+  `tests/`），用 `import { test } from 'node:test'` + `assert`。
 - 每个测试自建 `openDb(':memory:')`，**不写用户真实数据库、不联网**（network 相关的纯解析函数用固定字符串测）。
 - 需要固定"今天"时显式传 `today: '2026-10-31'` 之类参数，不依赖系统时钟。
 - 至少覆盖：正常路径、校验失败路径（错误码断言）、幂等路径（重复调用不重复写）、金额隔离断言。
-- 跑测：`cd 'D:\DSH_WorkPlace\记账理财插件' && node --test packages/dsh-ledger-wealth/tests/`
-  （根 `node_modules` 有 `@deepseek-ai/dsh-tools`，插件包通过根 node_modules 解析 peer）。
+- 跑测：`cd 'D:\DSH_WorkPlace\dsh-ledger-wealth' && node tests/run.mjs`
+  （`node --test` 会在 Windows 沙箱里 spawn 失败，所以用单进程 runner；插件无运行期依赖，
+  `@deepseek-ai/dsh-tools` 缺失时由 `lib/toolkit.js` 的本地实现兜底）。
 
 ## 10. 交付标准（Definition of Done）
 

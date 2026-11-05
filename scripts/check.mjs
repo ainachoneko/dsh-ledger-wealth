@@ -5,7 +5,7 @@
  * thing by importing each module (syntax + import graph + top-level execution).
  * It never calls `apply()`, so no database or host service is touched.
  *
- * Usage: node packages/dsh-ledger-wealth/scripts/check.mjs
+ * Usage: node scripts/check.mjs
  */
 
 import { readdirSync, statSync } from 'node:fs'

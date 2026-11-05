@@ -23,7 +23,7 @@ dsh plugin --profile desktop add dsh-ledger-wealth
 dsh plugin --profile desktop add ./dsh-ledger-wealth-1.0.0.tgz
 
 # 3) 源码开发（改代码即时生效）
-dsh plugin --profile desktop add link:/绝对路径/packages/dsh-ledger-wealth
+dsh plugin --profile desktop add link:/绝对路径/dsh-ledger-wealth
 ```
 
 装完重启 DSH，会话里就能看到下面这些工具。数据库默认落在 `~/.dsh/ledger-wealth/ledger.sqlite`。
@@ -101,7 +101,7 @@ dsh plugin --profile desktop add link:/绝对路径/packages/dsh-ledger-wealth
 ## 开发
 
 ```bash
-cd packages/dsh-ledger-wealth
+cd dsh-ledger-wealth
 node tests/run.mjs      # 64 个用例，全内存库，不联网
 node scripts/check.mjs  # 语法 + 清单自检
 ```
