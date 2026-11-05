@@ -91,6 +91,24 @@ data/plugins/<owner>__dsh-ledger-wealth.yml
 
 PR 通过 CI（校验 manifest、仓库年龄、YAML 格式、README 能否重新生成）后由维护者人工读一遍代码。合并后站点与市场自动刷新，通常在一天内。之后别人在「插件 → 发现」里搜「记账」就能看到并一键装上。
 
+PR 标题与正文可以直接用这份（正文里点明「描述与代码怎么对得上」，维护者会去核）：
+
+```text
+Add ainachoneko/dsh-ledger-wealth
+
+Local-first bookkeeping plugin with a separate wealth-holdings ledger.
+
+- 20 agent tools: 7 ledger_* (initial balance, add/list/delete entry, receipt OCR, month summary, balance),
+  7 finance_* (daily/month-end jobs, schedules, status, alerts, month-end report),
+  6 wealth_* (add/update/list products, record/refresh profit, summary)
+- Declares dsh.bundle.patch (cordis.patch.yml inserts one row: id ledger-wealth, name dsh-ledger-wealth);
+  lib/ is committed, no build step, no install hooks, zero runtime dependencies (uses Node's built-in node:sqlite)
+- Cash and wealth live in physically separate tables; no view or column adds one to the other
+- Daily profit uses a strict fallback chain (manual -> fund NAV -> estimated change -> not covered -> carried
+  forward -> unavailable) with a source label on every number; annualized/365 is never fabricated
+- Tests: 76 passing (node tests/run.mjs), CI workflow included
+```
+
 ---
 
 ## 4. 提 PR 前的自查
