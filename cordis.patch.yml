@@ -1,0 +1,12 @@
+# Bundle layer: DSH loads this file when the dsh-ledger-wealth bundle is enabled.
+# Keep every row here; override config in the profile's own cordis.patch.yml
+# with a top-level `- id: ledger-wealth` entry instead of editing this file.
+- insert:
+    - id: ledger-wealth
+      name: dsh-ledger-wealth
+      config:
+        timeZone: Asia/Shanghai
+        dailyJobCron: "0 20 * * *"
+        fetchTimeoutMs: 8000
+        fundApiEnabled: true
+        bankApiEnabled: true

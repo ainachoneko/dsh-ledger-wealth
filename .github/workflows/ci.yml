@@ -1,0 +1,25 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # 与 DSH 桌面端自带的 Node 对齐（node:sqlite 无 flag 可用）
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: 模块可导入
+        run: node scripts/check.mjs
+      - name: 测试
+        run: node tests/run.mjs
+      - name: 打包内容
+        run: node scripts/pack.mjs
+      # 市场安装只认「声明了入口且文件真的在」，这条拦住忘记提交 lib/ 的情况
+      - name: 入口文件存在
+        run: node -e "const p=require('./package.json');const fs=require('fs');const f=p.main||p.exports['.'];if(!fs.existsSync(f)){console.error('缺少入口 '+f);process.exit(1)};console.log('入口 ok: '+f)"
