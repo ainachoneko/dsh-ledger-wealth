@@ -89,12 +89,56 @@ data/plugins/<owner>__dsh-ledger-wealth.yml
 - 描述里出现 `": "`（冒号+空格）**必须加引号**，否则 YAML 当成嵌套键，CI 直接红。
 - 不要动两个 README，它们由 `data/plugins/*.yml` 生成；也不要顺手改别人的条目。
 
-PR 通过 CI（校验 manifest、仓库年龄、YAML 格式、README 能否重新生成）后由维护者人工读一遍代码。合并后站点与市场自动刷新，通常在一天内。之后别人在「插件 → 发现」里搜「记账」就能看到并一键装上。
+### 3.1 网页操作，六步
 
-PR 标题与正文可以直接用这份（正文里点明「描述与代码怎么对得上」，维护者会去核）：
+前置：仓库创建满 24 小时（`git push` 之后等一天；CI 会读仓库的 `created_at`）。
+
+**① Fork 列表仓库**
+
+打开 <https://github.com/awesome-dsh-plugin/awesome-dsh-plugin>，点右上角 **Fork** → **Create fork**。
+等两秒，页面跳到 `https://github.com/ainachoneko/awesome-dsh-plugin`（你的副本）。
+
+**② 一步到位的新建文件地址**
+
+在地址栏把 URL 换成这个（`ainachoneko` 换成你的账号）：
+
+```
+https://github.com/ainachoneko/awesome-dsh-plugin/new/main/data/plugins/ainachoneko__dsh-ledger-wealth.yml
+```
+
+打不开就手动走：在你 fork 的仓库首页点 **Add file** → **Create new file**，在文件名框里输入
+`data/plugins/ainachoneko__dsh-ledger-wealth.yml`（敲 `/` 会自动变成目录）。
+
+**③ 粘内容**
+
+把本仓库 `docs/market-entry.yml` 的内容整份粘进编辑框（`node scripts/prepare-release.mjs` 生成的
+`dist/catalog/ainachoneko__dsh-ledger-wealth.yml` 与它逐字节一致）。**不要加任何其他文件**，
+不要改两个 README——它们由 `data/plugins/*.yml` 生成。
+
+**④ Commit**
+
+页面下方 Commit changes → 描述随便写（`Add ainachoneko/dsh-ledger-wealth`）→ 可以直接提交到 `main`，
+也可以选 **Create a new branch**（推荐，名字 `add-dsh-ledger-wealth`），勾上 "Propose changes"。
+
+**⑤ 回到上游仓库开 PR**
+
+提交后你 fork 的页面顶部会出现黄色横条，点 **Compare & pull request**；
+或者手动打开 <https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/compare/main...ainachoneko:awesome-dsh-plugin:main>。
+
+**⑥ 填标题与正文**
+
+标题：`Add ainachoneko/dsh-ledger-wealth`
+
+正文：GitHub 会自动把仓库的 PR 模板（6 个 checkbox）填进来。**保留它、全部打勾**，然后在末尾追加
+下面这段说明。完整可复制版本见 `docs/pr-body.md`。
 
 ```text
-Add ainachoneko/dsh-ledger-wealth
+- [x] I added one file at `data/plugins/ainachoneko__dsh-ledger-wealth.yml` — that single file is the whole submission.
+- [x] My repo's `package.json` declares `dsh.bundle` (`dsh.bundle.patch: ./cordis.patch.yml`); there is no browser half, so no `dsh.client`.
+- [x] My repo is at least 1 day old — created 2026-11-05T14:22:37Z.
+- [x] `category: tools` — the plugin ships 20 agent tools (7 ledger_*, 7 finance_*, 6 wealth_*).
+- [x] Description states what the plugin does, no superlatives.
+- [x] My repo has the `dsh-plugin` topic.
 
 Local-first bookkeeping plugin with a separate wealth-holdings ledger.
 
@@ -106,8 +150,13 @@ Local-first bookkeeping plugin with a separate wealth-holdings ledger.
 - Cash and wealth live in physically separate tables; no view or column adds one to the other
 - Daily profit uses a strict fallback chain (manual -> fund NAV -> estimated change -> not covered -> carried
   forward -> unavailable) with a source label on every number; annualized/365 is never fabricated
-- Tests: 79 passing (node tests/run.mjs), CI workflow included
+- Tests: 83 passing (node tests/run.mjs), CI workflow included
 ```
+
+提交后 CI 会跑 4~6 个检查（manifest、仓库年龄、YAML 能否解析、README 能否重新生成、没碰 `.github/`、
+不是空 diff）。全绿之后由维护者读一遍代码，合并后站点与市场自动刷新，通常一天内。
+
+之后别人在 DSH 的「插件 → 发现」里搜「记账」就能看到并一键装上。
 
 ---
 

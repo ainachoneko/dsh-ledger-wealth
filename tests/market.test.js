@@ -10,7 +10,7 @@
  */
 
 import assert from 'node:assert/strict'
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
@@ -137,5 +137,59 @@ describe('CI 配置：YAML 必须是 GitHub 能解析的', () => {
     for (const step of ['node scripts/check.mjs', 'node tests/run.mjs', 'node scripts/pack.mjs']) {
       assert.ok(workflow.includes(step), `workflow 缺少步骤：${step}`)
     }
+  })
+})
+
+describe('PR 材料：正文与代码对得上', () => {
+  const body = readText('docs/pr-body.md')
+  const entry = readText('docs/market-entry.yml')
+
+  const toolNames = readdirSync(join(root, 'lib/tools'))
+    .filter((name) => name.endsWith('.js'))
+    .flatMap((file) => [
+      ...readText(join('lib/tools', file)).matchAll(/name: '((?:ledger|wealth|finance)_[a-z_]+)'/g),
+    ])
+    .map((match) => match[1])
+  const unique = [...new Set(toolNames)]
+  const groups = unique.reduce((acc, name) => {
+    const prefix = name.slice(0, name.indexOf('_'))
+    acc[prefix] = (acc[prefix] ?? 0) + 1
+    return acc
+  }, {})
+
+  // 精选列表会拿描述对着代码核，写「20 个工具」就得真有 20 个，写成 7/7/6 也得真对上。
+  it('正文声明的工具总数与 lib/tools 实际注册数一致', () => {
+    assert.equal(unique.length, 20, `实际注册了 ${unique.length} 个工具，正文里的数字要跟着改`)
+    assert.ok(body.includes(`${unique.length} agent tools`), `正文没有写「${unique.length} agent tools」`)
+  })
+
+  it('正文声明的分组数与实际一致（ledger 7 / finance 7 / wealth 6）', () => {
+    assert.deepEqual(groups, { ledger: 7, finance: 7, wealth: 6 })
+    for (const [prefix, count] of Object.entries(groups)) {
+      assert.ok(
+        body.includes(`${count} \`${prefix}_*\``),
+        `正文缺少「${count} 个 ${prefix}_* 工具」这一组，或数字与代码不符`,
+      )
+    }
+  })
+
+  // 模板是 6 项，漏勾一项维护者会当成没自查。
+  it('正文把模板的 6 个 checkbox 全勾了', () => {
+    const ticked = (body.match(/^- \[x\]/gm) ?? []).length
+    const unticked = (body.match(/^- \[ \]/gm) ?? []).length
+    assert.equal(unticked, 0, '还有没勾的 checkbox')
+    assert.equal(ticked, 6, `勾了 ${ticked} 项，模板要求 6 项`)
+  })
+
+  it('正文的文件路径与条目里的 owner/repo 一致', () => {
+    const url = /^url:[ ]*([^ ]+)$/m.exec(entry)?.[1]
+    const name = /^name:[ ]*([^ ]+)$/m.exec(entry)?.[1]
+    assert.ok(url && name, '条目缺少 url 或 name')
+    const [owner, repo] = name.split('/')
+    assert.ok(
+      body.includes(`data/plugins/${owner}__${repo}.yml`),
+      `正文里的文件路径应为 data/plugins/${owner}__${repo}.yml`,
+    )
+    assert.ok(body.includes(url), `正文里的仓库链接应等于条目里的 ${url}`)
   })
 })
