@@ -1,7 +1,7 @@
 {
   "name": "dsh-ledger-wealth",
   "version": "1.0.0",
-  "description": "本地优先的记账 + 理财持仓二合一 DSH 插件：文字/图片记账、running balance、每日收益严格降级链、月末双节报告（金额物理隔离，纯本地 SQLite）",
+  "description": "本地优先的记账 + 理财持仓 DSH 插件：记账与小票 OCR、running balance、每日收益严格降级链、月末双节报告。Local-first bookkeeping + wealth-holdings ledger for DeepSeek Harness, cash and holdings never merged.",
   "keywords": [
     "deepseek-harness",
     "deepseek-harness-plugin",

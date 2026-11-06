@@ -106,7 +106,7 @@ Local-first bookkeeping plugin with a separate wealth-holdings ledger.
 - Cash and wealth live in physically separate tables; no view or column adds one to the other
 - Daily profit uses a strict fallback chain (manual -> fund NAV -> estimated change -> not covered -> carried
   forward -> unavailable) with a source label on every number; annualized/365 is never fabricated
-- Tests: 76 passing (node tests/run.mjs), CI workflow included
+- Tests: 79 passing (node tests/run.mjs), CI workflow included
 ```
 
 ---
