@@ -109,3 +109,33 @@ describe('市场收录：条目文件', () => {
     }
   })
 })
+
+describe('CI 配置：YAML 必须是 GitHub 能解析的', () => {
+  const workflow = readText('.github/workflows/ci.yml')
+
+  // 真实踩过的坑：`run: ... console.log('入口 ok: '+f)` 里的「冒号+空格」在 YAML
+  // plain scalar 中是键值分隔符，整份 workflow 被判非法，运行直接 0 个 job 失败。
+  it('顶层字段与步骤值里不出现未加引号的「冒号+空格」', () => {
+    const offenders = []
+    workflow.split(/\r?\n/).forEach((line, index) => {
+      const match = /^\s*(?:-\s+)?(?:run|name|with|uses):\s+(\S.*)$/.exec(line)
+      if (!match) return
+      const value = match[1]
+      if (/^['"|>]/.test(value)) return
+      if (value.includes(': ')) offenders.push(`第 ${index + 1} 行：${line.trim()}`)
+    })
+    assert.deepEqual(offenders, [], `这些行的值含未转义的「冒号+空格」，YAML 会解析失败：\n${offenders.join('\n')}`)
+  })
+
+  it('没有制表符、BOM 或 CRLF', () => {
+    assert.equal(workflow.includes('\t'), false, 'workflow 里不能有制表符')
+    assert.equal(workflow.charCodeAt(0) === 0xfeff, false, 'workflow 不能以 BOM 开头')
+    assert.equal(workflow.includes('\r'), false, 'workflow 必须是 LF 换行')
+  })
+
+  it('必跑的三步都在：自检、测试、打包', () => {
+    for (const step of ['node scripts/check.mjs', 'node tests/run.mjs', 'node scripts/pack.mjs']) {
+      assert.ok(workflow.includes(step), `workflow 缺少步骤：${step}`)
+    }
+  })
+})
