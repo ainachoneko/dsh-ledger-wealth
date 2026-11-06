@@ -98,16 +98,21 @@ data/plugins/<owner>__dsh-ledger-wealth.yml
 打开 <https://github.com/awesome-dsh-plugin/awesome-dsh-plugin>，点右上角 **Fork** → **Create fork**。
 等两秒，页面跳到 `https://github.com/ainachoneko/awesome-dsh-plugin`（你的副本）。
 
-**② 一步到位的新建文件地址**
+**② 进入 `data/plugins` 目录再新建文件**
 
-在地址栏把 URL 换成这个（`ainachoneko` 换成你的账号）：
+打开（把 `ainachoneko` 换成你的账号，`main` 换成你的分支名如果已建分支）：
 
 ```
-https://github.com/ainachoneko/awesome-dsh-plugin/new/main/data/plugins/ainachoneko__dsh-ledger-wealth.yml
+https://github.com/ainachoneko/awesome-dsh-plugin/tree/main/data/plugins
 ```
 
-打不开就手动走：在你 fork 的仓库首页点 **Add file** → **Create new file**，在文件名框里输入
-`data/plugins/ainachoneko__dsh-ledger-wealth.yml`（敲 `/` 会自动变成目录）。
+点右上角 **Add file** → **Create new file**。此时页面顶部面包屑已经是 `data / plugins`，
+文件名框是空的——**只输入文件名** `ainachoneko__dsh-ledger-wealth.yml`，不要再带 `data/plugins/`。
+
+> ⚠️ 别用「带完整路径的 /new/ 链接」。`https://github.com/<you>/awesome-dsh-plugin/new/main/data/plugins/<owner>__dsh-ledger-wealth.yml`
+> 会把整条路径读成**目录**，而文件名框仍然空着要你再输一次文件名，结果落成
+> `data/plugins/<owner>__dsh-ledger-wealth.yml/<owner>__dsh-ledger-wealth.yml`（嵌套一层）。
+> 真踩了也不慌：把那个多出来的文件 Delete file，再从目录页重建即可。先在目录页里新建，不会遇到这个问题。
 
 **③ 粘内容**
 
