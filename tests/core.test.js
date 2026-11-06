@@ -4,6 +4,8 @@
  */
 
 import assert from 'node:assert/strict'
+import { tmpdir } from 'node:os'
+import { join, resolve } from 'node:path'
 import { afterEach, beforeEach, describe, it } from 'node:test'
 
 import { resolveConfig, resolveDbPath, DEFAULT_CONFIG } from '../lib/config.js'
@@ -169,10 +171,16 @@ describe('config', () => {
   })
 
   it('resolves the database path from DSH_HOME or an explicit value', () => {
-    process.env.DSH_HOME = 'D:\\fake-dsh-home'
-    assert.ok(resolveDbPath(testConfig()).replaceAll('\\', '/').endsWith('/fake-dsh-home/ledger-wealth/ledger.sqlite'))
-    const explicit = resolveDbPath(testConfig({ dbPath: 'D:\\tmp\\custom.sqlite' }))
-    assert.equal(explicit, 'D:\\tmp\\custom.sqlite')
+    // Roots must be absolute *on the running platform*: a literal `D:\...` is not
+    // absolute for node:path on the Linux CI runner, so resolve() would leave it relative.
+    const fakeHome = join(resolve(tmpdir()), 'fake-dsh-home')
+    process.env.DSH_HOME = fakeHome
+    assert.equal(
+      resolveDbPath(testConfig()).replaceAll('\\', '/'),
+      `${fakeHome.replaceAll('\\', '/')}/ledger-wealth/ledger.sqlite`,
+    )
+    const custom = join(resolve(tmpdir()), 'custom.sqlite')
+    assert.equal(resolveDbPath(testConfig({ dbPath: custom })), custom)
   })
 })
 
