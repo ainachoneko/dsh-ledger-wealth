@@ -18,6 +18,18 @@ jobs:
       - name: 模块与必需文件
         run: node scripts/check.mjs
       - name: 测试
-        run: node tests/run.mjs
+        run: |
+          set -o pipefail
+          node tests/run.mjs 2>&1 | tee "$RUNNER_TEMP/tests.log"
+      # CI 的日志只有登录后才能下载；把失败用例名写成 annotation，任何人在仓库页面上
+      # 就能看到是哪一条挂了，也方便用 API 读 /check-runs/{id}/annotations。
+      - name: 失败的用例
+        if: failure()
+        run: |
+          echo "从 TAP 输出里摘出失败用例："
+          grep -nE "not ok|✖" "$RUNNER_TEMP/tests.log" | head -25 | while IFS= read -r line; do
+            echo "::error::${line}"
+          done
+          exit 0
       - name: 打包内容
         run: node scripts/pack.mjs
